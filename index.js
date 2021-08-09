@@ -1,6 +1,9 @@
 const puppeteer = require("puppeteer");
+const fs = require("fs");
 const request = require("request-promise-native").defaults({ Jar: true });
 const poll = require("promise-poller").default;
+// Imports the Google Cloud client library
+const vision = require("@google-cloud/vision");
 require("dotenv").config();
 
 const config = {
@@ -67,10 +70,24 @@ async function main() {
   await image.screenshot({
     path: "testResults.png",
   });
+
+  await getImageText();
   await page.close(); // Close the website
   await browser.close(); //close browser
+  await deleteImage();
 }
 main();
+
+async function getImageText() {
+  // Creates a client
+  const client = new vision.ImageAnnotatorClient();
+  console.log(`Looking for text in image`);
+  // Performs label detection on the image file
+  const [result] = await client.textDetection("./testResults.png");
+  const [annotation] = result.textAnnotations;
+  const text = annotation ? annotation.description : "";
+  console.log("Extracted text from image:", text);
+}
 
 async function initiateCaptchaRequest(apiKey) {
   const formData = {
@@ -119,6 +136,15 @@ function requestCaptchaResults(apiKey, requestId) {
       resolve(resp.request);
     });
   };
+}
+function deleteImage() {
+  const path = "./testResults.png";
+  try {
+    fs.unlinkSync(path);
+    console.log("File removed:", path);
+  } catch (err) {
+    console.error(err);
+  }
 }
 
 const timeout = (ms) => new Promise((res) => setTimeout(res, ms));
