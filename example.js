@@ -1,6 +1,15 @@
 const vision = require("@google-cloud/vision");
 const fs = require("fs");
+const fetch = require("node-fetch");
+const morgan = require("morgan");
+
+const cors = require("cors");
 require("dotenv").config();
+const express = require("express");
+const app = express();
+const port = 5000;
+
+app.use(cors());
 
 async function getImageText() {
   try {
@@ -13,6 +22,8 @@ async function getImageText() {
     console.log(annotation);
     const text = annotation ? annotation.description : "";
     console.log("Extracted text from image:", text);
+    ads.push(text);
+    console.log(ads);
   } catch (error) {
     console.log("There is no text to display, please re-try again later.");
   }
@@ -27,3 +38,13 @@ async function getImageText() {
   }
 }
 getImageText();
+app.use(morgan("combined"));
+const ads = [];
+
+app.get("/test", (req, res) => {
+  res.send(ads);
+});
+
+app.listen(port, () => {
+  console.log(`Example app listening at http://localhost:${port}`);
+});
