@@ -1,16 +1,18 @@
 const puppeteer = require("puppeteer");
 const express = require("express");
 const app = express();
-const morgan = require("morgan");
 const fs = require("fs");
 const cors = require("cors");
 const request = require("request-promise-native").defaults({ Jar: true });
 const poll = require("promise-poller").default;
-app.use(morgan("combined"));
+const mongoose = require("mongoose");
+const getTextResult = require("./database/utils");
+
 const port = 5500;
 // Imports the Google Cloud client library
 const vision = require("@google-cloud/vision");
 require("dotenv").config();
+app.use(cors());
 
 // Imports the Google Cloud client library.
 // const { Storage } = require("@google-cloud/storage");
@@ -36,11 +38,8 @@ require("dotenv").config();
 // }
 // listBuckets();
 
-app.use(cors());
-
-const schedulingText = [];
-
-const App = (pinNum, dateOfB) => {
+const scraper = (pinNum, dateOfB) => {
+  const resultArray = [];
   const config = {
     sitekey: process.env.SITEKEY,
     pageurl: process.env.PAGEURL,
@@ -123,10 +122,9 @@ const App = (pinNum, dateOfB) => {
     // Performs label detection on the image file
     const [result] = await client.textDetection("./testResults.png");
     const [annotation] = result.textAnnotations;
-    const text = annotation ? annotation.description : "";
-    console.log("Extracted text from image:", text);
-    schedulingText.push(text);
-    console.log(schedulingText);
+    const textResult = annotation ? annotation.description : "";
+    console.log("Extracted text from image:", textResult);
+    getTextResult(textResult);
   }
 
   async function initiateCaptchaRequest(apiKey) {
@@ -195,6 +193,7 @@ const App = (pinNum, dateOfB) => {
 
   const timeout = (ms) => new Promise((res) => setTimeout(res, ms));
 };
+scraper("2520228", "09/10/1987");
 
 // const userArray = [];
 // app.get("/test", (req, res) => {
@@ -208,30 +207,32 @@ const App = (pinNum, dateOfB) => {
 //   res.send("info iS HERE!");
 // });
 
-app.use(express.urlencoded({ extended: false }));
+// app.use(express.urlencoded({ extended: false }));
 
-// Route to Homepage
-app.get("/", (req, res) => {
-  res.sendFile(__dirname + "/static/index.html");
-});
-app.get("/login", (req, res) => {
-  res.sendFile(__dirname + "/static/login.html");
-});
+// // Route to Homepage
+// app.get("/", (req, res) => {
+//   res.sendFile(__dirname + "/static/index.html");
+// });
+// app.get("/login", (req, res) => {
+//   res.sendFile(__dirname + "/static/login.html");
+// });
 
-// Route to results Page
-app.get("/results", (req, res) => {
-  res.sendFile(__dirname + "/static/results.html");
-});
+// // Route to results Page
+// app.get("/results", (req, res) => {
+//   res.sendFile(__dirname + "/static/results.html");
+// });
 
-app.post("/results", (req, res) => {
-  // Insert Login Code Here
+// app.post("/results", (req, res) => {
+//   // Insert Login Code Here
 
-  let username = req.body.username;
-  let password = req.body.password;
-  App(username, password);
-  res.send(schedulingText.toString());
-});
+//   let username = req.body.username;
+//   let password = req.body.password;
+//   scraper(username, password);
+//   res.send(resultArray.toString());
+// });
 
-app.listen(port, () => {
-  console.log(`Scraper app listening at http://localhost:${port}`);
-});
+// app.listen(port, () => {
+//   console.log(`Scraper app listening at http://localhost:${port}`);
+// });
+
+module.exports = { scraper };
