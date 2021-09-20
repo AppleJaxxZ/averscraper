@@ -225,10 +225,11 @@ app.get("/results", (req, res) => {
 
 app.post("/results", (req, res) => {
   // Insert Login Code Here
+
   let username = req.body.username;
   let password = req.body.password;
   App(username, password);
-  res.send(ads.toString());
+  res.send(schedulingText.toString());
 });
 
 app.listen(port, () => {
