@@ -1,7 +1,9 @@
 const express = require("express");
+const morgan = require("morgan");
 const app = express();
 const port = 5000;
 const cors = require("cors");
+app.use(morgan("combined"));
 
 const scrape = require("./scraper");
 

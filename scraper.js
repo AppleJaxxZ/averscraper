@@ -7,16 +7,40 @@ const cors = require("cors");
 const request = require("request-promise-native").defaults({ Jar: true });
 const poll = require("promise-poller").default;
 app.use(morgan("combined"));
-const port = 5000;
+const port = 5500;
 // Imports the Google Cloud client library
 const vision = require("@google-cloud/vision");
 require("dotenv").config();
 
+// Imports the Google Cloud client library.
+// const { Storage } = require("@google-cloud/storage");
+
+// // Instantiates a client. If you don't specify credentials when constructing
+// // the client, the client library will look for credentials in the
+// // environment.
+// const storage = new Storage();
+// // Makes an authenticated API request.
+// async function listBuckets() {
+//   try {
+//     const results = await storage.getBuckets();
+
+//     const [buckets] = results;
+
+//     console.log("Buckets:");
+//     buckets.forEach((bucket) => {
+//       console.log(bucket.name);
+//     });
+//   } catch (err) {
+//     console.error("ERROR:", err);
+//   }
+// }
+// listBuckets();
+
 app.use(cors());
 
-const ads = [];
+const schedulingText = [];
 
-const App = () => {
+const App = (pinNum, dateOfB) => {
   const config = {
     sitekey: process.env.SITEKEY,
     pageurl: process.env.PAGEURL,
@@ -25,13 +49,13 @@ const App = () => {
     apiRetrieveUrl: "http://2captcha.com/res.php",
   };
 
-  const getPIN = function () {
-    return "2520228";
-  };
+  // const getPIN = function (pin) {
+  //   return pin;
+  // };
 
-  const getDOB = function () {
-    return "09/10/1987";
-  };
+  // const getDOB = function (dateOfB) {
+  //   return dateOfB;
+  // };
 
   const chromeOptions = {
     executablePath: "/Program Files/Google/Chrome/Application/chrome.exe",
@@ -49,15 +73,15 @@ const App = () => {
     try {
       const requestId = await initiateCaptchaRequest(config.apiKey);
 
-      const pin = getPIN();
-      console.log(`Typing PIN ${pin}`);
-      await page.type("#PIN", pin);
+      // const pin = getPIN();
+      console.log(`Typing PIN ${pinNum}`);
+      await page.type("#PIN", pinNum);
 
-      const dob = getDOB();
-      console.log(`Typing DOB ${dob}`);
+      // const dob = getDOB();
+      console.log(`Typing DOB ${dateOfB}`);
       const input = await page.$("#DOB");
       await input.click({ clickCount: 3 });
-      await input.type(dob);
+      await input.type(dateOfB);
 
       const response = await pollForRequestResults(config.apiKey, requestId);
 
@@ -69,6 +93,9 @@ const App = () => {
       console.log(`Submitting....`);
       page.click("#Submit");
     } catch (error) {
+      console.log(
+        "Your request could not be completed at this time, please check your pin number and date of birth.  Also make sure your internet connection is working and try again."
+      );
       console.error(error);
     }
 
@@ -98,14 +125,8 @@ const App = () => {
     const [annotation] = result.textAnnotations;
     const text = annotation ? annotation.description : "";
     console.log("Extracted text from image:", text);
-    ads.push(text);
-    console.log(ads);
-
-    //-----FUNCTION ADDS .TXT FILE OF SAVED TEXT--KEEPER??
-    // fs.appendFile("response.txt", text, function (err) {
-    //   if (err) throw err;
-    //   console.log("Updated!");
-    // });
+    schedulingText.push(text);
+    console.log(schedulingText);
   }
 
   async function initiateCaptchaRequest(apiKey) {
@@ -175,12 +196,41 @@ const App = () => {
   const timeout = (ms) => new Promise((res) => setTimeout(res, ms));
 };
 
-App();
+// const userArray = [];
+// app.get("/test", (req, res) => {
+//   res.send(ads.toString().replace);
+// });
 
-app.get("/test", (req, res) => {
+// app.post("/data", (req, res) => {
+//   var loginData = req.body;
+//   console.log(loginData);
+//   userArray.push(loginData);
+//   res.send("info iS HERE!");
+// });
+
+app.use(express.urlencoded({ extended: false }));
+
+// Route to Homepage
+app.get("/", (req, res) => {
+  res.sendFile(__dirname + "/static/index.html");
+});
+app.get("/login", (req, res) => {
+  res.sendFile(__dirname + "/static/login.html");
+});
+
+// Route to results Page
+app.get("/results", (req, res) => {
+  res.sendFile(__dirname + "/static/results.html");
+});
+
+app.post("/results", (req, res) => {
+  // Insert Login Code Here
+  let username = req.body.username;
+  let password = req.body.password;
+  App(username, password);
   res.send(ads.toString());
 });
 
 app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`);
+  console.log(`Scraper app listening at http://localhost:${port}`);
 });

@@ -80,25 +80,29 @@
       <p id="display"></p>
       <h2>Login Form</h2>
 
-      <form action="/results" method="post">
+      <form action="/login" method="GET">
         <div class="container">
           <label for="uname"><b>Username</b></label>
           <input
+            id="username"
             type="text"
             placeholder="Enter Username"
-            name="uname"
+            name="username"
+            autocomplete="username"
             required
           />
 
           <label for="psw"><b>Password</b></label>
           <input
+            id="password"
             type="password"
             placeholder="Enter Password"
-            name="psw"
+            name="password"
+            autocomplete="current-password"
             required
           />
 
-          <button type="submit">Login</button>
+          <button id="submit" type="submit">Login</button>
           <label>
             <input type="checkbox" checked="checked" name="remember" /> Remember
             me
@@ -120,4 +124,9 @@
     }
     Fun();
   </script> -->
+  <script>
+    const pin = document.getElementById("username").innerText;
+    const dobb = document.getElementById("password").innerText;
+    // document.getElementById("submit").addEventListener("click", App(pin, dobb));
+  </script>
 </html>

@@ -1,8 +1,6 @@
 const vision = require("@google-cloud/vision");
 const fs = require("fs");
-const fetch = require("node-fetch");
 const morgan = require("morgan");
-
 const cors = require("cors");
 require("dotenv").config();
 const express = require("express");
@@ -10,6 +8,8 @@ const app = express();
 const port = 5000;
 
 app.use(cors());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 async function getImageText() {
   try {
@@ -40,10 +40,18 @@ async function getImageText() {
 getImageText();
 app.use(morgan("combined"));
 const ads = [];
+const userArray = [];
 
-app.get("/test", (req, res) => {
-  res.send(ads);
+app.post("/data", function (req, res) {
+  var loginData = req.body;
+  console.log(loginData);
+  userArray.push(loginData);
+  res.send(userArray);
 });
+
+// app.get("/test", (req, res) => {
+//   res.send(ads);
+// });
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
