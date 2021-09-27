@@ -6,7 +6,8 @@ const cors = require("cors");
 const request = require("request-promise-native").defaults({ Jar: true });
 const poll = require("promise-poller").default;
 const getTextResult = require("./database/utils");
-const mongoose = require("mongoose");
+require("./database/database");
+const Result = require("./models/schedule");
 
 require("./database/database");
 
@@ -89,15 +90,15 @@ const scraper = async (pinNum, dateOfB) => {
     await getImageText();
     await page.close(); // Close the website
     await browser.close(); //close browser
-    // await deleteImage();
 
-    const answer = getImageText()
+    const answer = await getImageText()
       .then((result) => {
         return result;
       })
       .catch((e) => {
         console.log(e);
       });
+    await deleteImage();
     return answer;
   }
 
@@ -115,10 +116,15 @@ const scraper = async (pinNum, dateOfB) => {
     console.log(`Looking for text in image`);
     // Performs label detection on the image file
     const [result] = await client.textDetection("./testResults.png");
-    const [annotation] = result.textAnnotations;
-    const textResult = annotation ? annotation.description : "";
+    const [annotation] = await result.textAnnotations;
+    const textResult = (await annotation) ? annotation.description : "";
     console.log("Extracted text from image:", textResult);
-    // await getTextResult(textResult);
+    const schedule = new Result({
+      schedule: textResult,
+    });
+    await schedule.save(() => {
+      console.log("Your Schedule has been saved...hopefully.");
+    });
     return textResult;
   }
 

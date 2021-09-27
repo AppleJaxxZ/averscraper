@@ -1,7 +1,9 @@
 const mongoose = require("mongoose");
 
-module.exports = dataModel = mongoose.model("Result", {
+const Schedule = mongoose.model("Schedule", {
   schedule: {
     type: String,
   },
 });
+
+module.exports = Schedule;

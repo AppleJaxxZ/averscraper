@@ -1,5 +1,6 @@
 const { scraper } = require("../scraper");
 const path = require("path");
+const Result = require("../models/schedule");
 
 const home = (req, res) => {
   res.sendFile(path.join(__dirname + "/../static/index.html"));
@@ -14,10 +15,11 @@ const results = (req, res) => {
   let password = req.body.password;
   scraper(username, password)
     .then((result) => {
-      res.send(result);
+      res.status(201).send(result);
     })
     .catch((e) => {
       console.log(e);
+      res.status(404).send();
     });
 };
 
