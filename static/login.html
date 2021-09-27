@@ -4,13 +4,31 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Login</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <style>
       body {
         font-family: Arial, Helvetica, sans-serif;
       }
       form {
         border: 3px solid #f1f1f1;
+      }
+      #loading {
+        position: fixed;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        opacity: 0.7;
+        background-color: #fff;
+        z-index: 99;
+      }
+
+      #loading-image {
+        z-index: 100;
       }
 
       input[type="text"],
@@ -75,6 +93,9 @@
     </style>
   </head>
   <body>
+    <div id="loading">
+      <img id="loading-image" src="loaderimage.gif" alt="Loader image" />
+    </div>
     <div>
       <h1>The data</h1>
       <p id="display"></p>
@@ -127,6 +148,10 @@
   <script>
     const pin = document.getElementById("username").innerText;
     const dobb = document.getElementById("password").innerText;
+    $(window).on("load", function () {
+      $("#loading").hide();
+    });
+
     // document.getElementById("submit").addEventListener("click", scraper(pin, dobb));
   </script>
 </html>
