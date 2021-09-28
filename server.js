@@ -1,10 +1,12 @@
 const express = require("express");
 const app = express();
 const routes = require("./routes/datas");
+const path = require("path");
 
 const morgan = require("morgan");
 app.use(morgan("combined"));
 app.use(express.static(__dirname + "/public"));
+app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: false }));
 
 app.use("/", routes);
