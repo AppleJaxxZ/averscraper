@@ -28,6 +28,7 @@
     "puppeteer": "^10.1.0",
     "request": "^2.88.2",
     "request-promise": "^4.2.6",
-    "request-promise-native": "^1.0.9"
+    "request-promise-native": "^1.0.9",
+    "twilio": "^3.71.1"
   }
 }

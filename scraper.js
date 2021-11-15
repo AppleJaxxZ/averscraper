@@ -5,20 +5,25 @@ const fs = require("fs");
 const cors = require("cors");
 const request = require("request-promise-native").defaults({ Jar: true });
 const poll = require("promise-poller").default;
-const getTextResult = require("./database/utils");
-require("./database/database");
-const Result = require("./models/schedule");
+require("dotenv").config();
+const twilioNumber = process.env.TWILIO_PHONE_NUMBER;
+const receivingNumber = process.env.RECEIVING_NUMBER;
+const accountSid = process.env.TWILIO_ACCOUNT_SID;
+const authToken = process.env.TWILIO_AUTH_TOKEN;
+const client = require("twilio")(accountSid, authToken);
 
-require("./database/database");
+console.log(accountSid);
+
+// require("./database/database");
+// const Result = require("./models/schedule");
 
 // Imports the Google Cloud client library
 
 const vision = require("@google-cloud/vision");
-require("dotenv").config();
+
 app.use(cors());
 
 const scraper = async (pinNum, dateOfB) => {
-  const resultArray = [];
   const config = {
     sitekey: process.env.SITEKEY,
     pageurl: process.env.PAGEURL,
@@ -26,14 +31,6 @@ const scraper = async (pinNum, dateOfB) => {
     apiSubmitUrl: "http://2captcha.com/in.php",
     apiRetrieveUrl: "http://2captcha.com/res.php",
   };
-
-  // const getPIN = function (pin) {
-  //   return pin;
-  // };
-
-  // const getDOB = function (dateOfB) {
-  //   return dateOfB;
-  // };
 
   const chromeOptions = {
     executablePath: "/Program Files/Google/Chrome/Application/chrome.exe",
@@ -112,19 +109,32 @@ const scraper = async (pinNum, dateOfB) => {
 
   async function getImageText() {
     // Creates a client
-    const client = new vision.ImageAnnotatorClient();
+    const client = new vision.ImageAnnotatorClient({
+      type: process.env.TYPE,
+      project_id: process.env.PROJECT_ID,
+      private_key_id: process.env.PRIVATE_KEY_ID,
+      private_key: process.env.PRIVATE_KEY,
+      client_email: process.env.CLIENT_EMAIL,
+      client_id: process.env.CLIENT_ID,
+      auth_uri: process.env.AUTH_URI,
+      token_uri: process.env.TOKEN_URI,
+      auth_provider_x509_cert_url: process.env.AUTH_PROVIDER_X509_CERT_URL,
+      client_x509_cert_url: process.env.CLIENT_X509_CERT_URL,
+      // keyFilename: "./googlevisionapikeys.json",
+    });
     console.log(`Looking for text in image`);
     // Performs label detection on the image file
     const [result] = await client.textDetection("./testResults.png");
     const [annotation] = await result.textAnnotations;
     const textResult = (await annotation) ? annotation.description : "";
     console.log("Extracted text from image:", textResult);
-    const schedule = new Result({
-      schedule: textResult,
-    });
-    await schedule.save(() => {
-      console.log("Your Schedule has been saved...hopefully.");
-    });
+    // const schedule = new Result({
+    //   schedule: textResult,
+    // });
+    sendSMS(textResult);
+    // await schedule.save(() => {
+    //   console.log("Your Schedule has been saved...hopefully.");
+    // });
     return textResult;
   }
 
@@ -192,9 +202,21 @@ const scraper = async (pinNum, dateOfB) => {
     }
   }
 
+  const sendSMS = (sms) => {
+    client.messages
+      .create({
+        body: sms,
+        from: twilioNumber,
+        to: receivingNumber,
+      })
+      .then((message) =>
+        console.log("Your message was sent buddy!" + message.sid)
+      );
+  };
+
   const timeout = (ms) => new Promise((res) => setTimeout(res, ms));
   return mainAnswer;
 };
-// scraper("2520228", "09/10/1987");
+scraper("2520228", "09/10/1987");
 
 module.exports = { scraper };

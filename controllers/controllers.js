@@ -3,11 +3,11 @@ const path = require("path");
 const Result = require("../models/schedule");
 
 const home = (req, res) => {
-  res.sendFile(path.join(__dirname + "/../static/index.html"));
+  res.status(200).sendFile(path.join(__dirname + "/../static/index.html"));
 };
 
 const login = (req, res) => {
-  res.sendFile(path.join(__dirname + "/../static/login.html"));
+  res.status(200).sendFile(path.join(__dirname + "/../static/login.html"));
 };
 
 const results = (req, res) => {

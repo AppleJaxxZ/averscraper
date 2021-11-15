@@ -1,10 +1,15 @@
 const mongoose = require("mongoose");
 
-const Schedule = mongoose.model("res", {
-  schedule: {
-    type: String,
-    trim: true,
+const scheduleSchema = new mongoose.Schema(
+  {
+    schedule: {
+      type: String,
+      trim: true,
+    },
   },
-});
-
+  {
+    timestamps: true,
+  }
+);
+const Schedule = mongoose.model("Schedule", scheduleSchema);
 module.exports = Schedule;
