@@ -18,39 +18,6 @@ console.log(accountSid);
 
 const vision = require("@google-cloud/vision");
 
-/**
- * TODO(developer): Uncomment the following lines before running the sample.
-//  */
-// The ID of your GCS bucket
-const bucketName = "aversmsstorage";
-
-// The ID of your GCS file
-const srcFilename = " googlevisionapikeys.json";
-
-// The path to which the file should be downloaded
-const destFileName = "/googleapi";
-
-// Imports the Google Cloud client library
-const { Storage } = require("@google-cloud/storage");
-
-// Creates a client
-const storage = new Storage();
-
-async function downloadPublicFile() {
-  const options = {
-    destination: destFileName,
-  };
-
-  // Download public file.
-  await storage.bucket(bucketName).file(srcFilename).download(options);
-
-  console.log(
-    `Downloaded public file ${srcFilename} from bucket name ${bucketName} to ${destFileName}`
-  );
-}
-
-downloadPublicFile().catch(console.error);
-
 app.use(cors());
 
 const scraper = async (pinNum, dateOfB) => {
@@ -150,7 +117,7 @@ const scraper = async (pinNum, dateOfB) => {
       // token_uri: process.env.GOOGLE_TOKEN_URI,
       // auth_provider_x509_cert_url: process.env.GOOGLE_AUTH_PROVIDER_CERT,
       // client_x509_cert_url: process.env.GOOGLE_CLIENT_CERT,
-      keyFilename: "./googleapi/googlevisionapikeys.json",
+      keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS,
     });
     console.log(`Looking for text in image`);
     // Performs label detection on the image file
