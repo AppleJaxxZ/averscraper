@@ -36,6 +36,7 @@ const scraper = async (pinNum, dateOfB) => {
     headless: true,
     slowMo: 60,
     defaultViewport: null,
+    args: ["--no-sandbox", "--disable-setuid-sandbox"],
   };
 
   async function main() {
