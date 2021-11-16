@@ -33,7 +33,6 @@ const scraper = async (pinNum, dateOfB) => {
   };
 
   const chromeOptions = {
-    executablePath: "/Program Files/Google/Chrome/Application/chrome.exe",
     headless: true,
     slowMo: 60,
     defaultViewport: null,
