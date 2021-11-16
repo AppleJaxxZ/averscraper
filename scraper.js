@@ -14,9 +14,6 @@ const client = require("twilio")(accountSid, authToken);
 
 console.log(accountSid);
 
-// require("./database/database");
-// const Result = require("./models/schedule");
-
 // Imports the Google Cloud client library
 
 const vision = require("@google-cloud/vision");
@@ -128,13 +125,8 @@ const scraper = async (pinNum, dateOfB) => {
     const [annotation] = await result.textAnnotations;
     const textResult = (await annotation) ? annotation.description : "";
     console.log("Extracted text from image:", textResult);
-    // const schedule = new Result({
-    //   schedule: textResult,
-    // });
     sendSMS(textResult);
-    // await schedule.save(() => {
-    //   console.log("Your Schedule has been saved...hopefully.");
-    // });
+
     return textResult;
   }
 
