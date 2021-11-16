@@ -18,6 +18,39 @@ console.log(accountSid);
 
 const vision = require("@google-cloud/vision");
 
+/**
+ * TODO(developer): Uncomment the following lines before running the sample.
+//  */
+// The ID of your GCS bucket
+const bucketName = "aversmsstorage";
+
+// The ID of your GCS file
+const srcFilename = " googlevisionapikeys.json";
+
+// The path to which the file should be downloaded
+const destFileName = "/googleapi";
+
+// Imports the Google Cloud client library
+const { Storage } = require("@google-cloud/storage");
+
+// Creates a client
+const storage = new Storage();
+
+async function downloadPublicFile() {
+  const options = {
+    destination: destFileName,
+  };
+
+  // Download public file.
+  await storage.bucket(bucketName).file(srcFilename).download(options);
+
+  console.log(
+    `Downloaded public file ${srcFilename} from bucket name ${bucketName} to ${destFileName}`
+  );
+}
+
+downloadPublicFile().catch(console.error);
+
 app.use(cors());
 
 const scraper = async (pinNum, dateOfB) => {
@@ -107,17 +140,17 @@ const scraper = async (pinNum, dateOfB) => {
   async function getImageText() {
     // Creates a client
     const client = new vision.ImageAnnotatorClient({
-      type: process.env.GOOGLE_TYPE,
-      project_id: process.env.GOOGLE_PROJECT_ID,
-      private_key_id: process.env.GOOGLE_PRIVATE_KEY_ID,
-      private_key: process.env.GOOGLE_PRIVATE_KEY,
-      client_email: process.env.GOOGLE_CLIENT_EMAIL,
-      client_id: process.env.GOOGLE_CLIENT_ID,
-      auth_uri: process.env.GOOGLE_AUTH_URI,
-      token_uri: process.env.GOOGLE_TOKEN_URI,
-      auth_provider_x509_cert_url: process.env.GOOGLE_AUTH_PROVIDER_CERT,
-      client_x509_cert_url: process.env.GOOGLE_CLIENT_CERT,
-      // keyFilename: "./googlevisionapikeys.json",
+      // type: process.env.GOOGLE_TYPE,
+      // project_id: process.env.GOOGLE_PROJECT_ID,
+      // private_key_id: process.env.GOOGLE_PRIVATE_KEY_ID,
+      // private_key: process.env.GOOGLE_PRIVATE_KEY,
+      // client_email: process.env.GOOGLE_CLIENT_EMAIL,
+      // client_id: process.env.GOOGLE_CLIENT_ID,
+      // auth_uri: process.env.GOOGLE_AUTH_URI,
+      // token_uri: process.env.GOOGLE_TOKEN_URI,
+      // auth_provider_x509_cert_url: process.env.GOOGLE_AUTH_PROVIDER_CERT,
+      // client_x509_cert_url: process.env.GOOGLE_CLIENT_CERT,
+      keyFilename: "./googleapi/googlevisionapikeys.json",
     });
     console.log(`Looking for text in image`);
     // Performs label detection on the image file
