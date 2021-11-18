@@ -12,7 +12,7 @@ const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const client = require("twilio")(accountSid, authToken);
 
-console.log(accountSid);
+
 
 // Imports the Google Cloud client library
 
@@ -107,16 +107,6 @@ const scraper = async (pinNum, dateOfB) => {
   async function getImageText() {
     // Creates a client
     const client = new vision.ImageAnnotatorClient({
-      // type: process.env.GOOGLE_TYPE,
-      // project_id: process.env.GOOGLE_PROJECT_ID,
-      // private_key_id: process.env.GOOGLE_PRIVATE_KEY_ID,
-      // private_key: process.env.GOOGLE_PRIVATE_KEY,
-      // client_email: process.env.GOOGLE_CLIENT_EMAIL,
-      // client_id: process.env.GOOGLE_CLIENT_ID,
-      // auth_uri: process.env.GOOGLE_AUTH_URI,
-      // token_uri: process.env.GOOGLE_TOKEN_URI,
-      // auth_provider_x509_cert_url: process.env.GOOGLE_AUTH_PROVIDER_CERT,
-      // client_x509_cert_url: process.env.GOOGLE_CLIENT_CERT,
       keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS,
     });
     console.log(`Looking for text in image`);
