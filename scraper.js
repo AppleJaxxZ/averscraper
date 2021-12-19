@@ -1,6 +1,5 @@
 const puppeteer = require("puppeteer");
-const express = require("express");
-const app = express();
+
 const fs = require("fs");
 const cors = require("cors");
 const request = require("request-promise-native").defaults({ Jar: true });
@@ -12,13 +11,9 @@ const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const client = require("twilio")(accountSid, authToken);
 
-
-
 // Imports the Google Cloud client library
 
 const vision = require("@google-cloud/vision");
-
-app.use(cors());
 
 const scraper = async (pinNum, dateOfB) => {
   const config = {
