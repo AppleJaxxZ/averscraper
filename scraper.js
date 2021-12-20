@@ -102,7 +102,7 @@ const scraper = async (pinNum, dateOfB) => {
   async function getImageText() {
     // Creates a client
     const client = new vision.ImageAnnotatorClient({
-      keyFilename: keyFile.json,
+      keyFilename: "./keyFile.json",
     });
     console.log(`Looking for text in image`);
     // Performs label detection on the image file
