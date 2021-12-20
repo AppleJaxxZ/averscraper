@@ -1,7 +1,7 @@
 const puppeteer = require("puppeteer");
 
 const fs = require("fs");
-const { Buffer } = require("buffer");
+const cors = require("cors");
 const request = require("request-promise-native").defaults({ Jar: true });
 const poll = require("promise-poller").default;
 require("dotenv").config();
@@ -100,11 +100,10 @@ const scraper = async (pinNum, dateOfB) => {
     });
 
   async function getImageText() {
-    const buffed = new Buffer.from(proccess.env.GOOGLE_APP_CREDENTIALS);
-    const parsedData = JSON.parse(buffed);
-
     // Creates a client
-    const client = new vision.ImageAnnotatorClient(parsedData);
+    const client = new vision.ImageAnnotatorClient({
+      keyFilename: "./keyFile.json",
+    });
     console.log(`Looking for text in image`);
     // Performs label detection on the image file
     const [result] = await client.textDetection("./testResults.png");
