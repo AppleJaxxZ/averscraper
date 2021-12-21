@@ -15,7 +15,7 @@ const client = require("twilio")(accountSid, authToken);
 
 const vision = require("@google-cloud/vision");
 
-const scraper = async (pinNum, dateOfB) => {
+const scraper = async (pinNum, dateOfB, phone) => {
   const config = {
     sitekey: process.env.SITEKEY,
     pageurl: process.env.PAGEURL,
@@ -76,10 +76,6 @@ const scraper = async (pinNum, dateOfB) => {
       path: "testResults.png",
     });
 
-    await getImageText();
-    await page.close(); // Close the website
-    await browser.close(); //close browser
-
     const answer = await getImageText()
       .then((result) => {
         return result;
@@ -87,6 +83,9 @@ const scraper = async (pinNum, dateOfB) => {
       .catch((e) => {
         console.log(e);
       });
+    await page.close(); // Close the website
+    await browser.close(); //close browser
+
     await deleteImage();
     return answer;
   }
@@ -182,9 +181,9 @@ const scraper = async (pinNum, dateOfB) => {
   const sendSMS = (sms) => {
     client.messages
       .create({
-        body: sms,
+        body: `${pinNum}: ${sms}..If your pin at the beginning of this text isn't yours please message me.`,
         from: twilioNumber,
-        to: receivingNumber,
+        to: phone,
       })
       .then((message) =>
         console.log("Your message was sent buddy!" + message.sid)
@@ -194,6 +193,6 @@ const scraper = async (pinNum, dateOfB) => {
   const timeout = (ms) => new Promise((res) => setTimeout(res, ms));
   return mainAnswer;
 };
-scraper("2520228", "09/10/1987");
+scraper("2520228", "09/10/1987", "14846579287");
 
 module.exports = { scraper };
