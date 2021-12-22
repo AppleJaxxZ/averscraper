@@ -193,6 +193,5 @@ const scraper = async (pinNum, dateOfB, phone) => {
   const timeout = (ms) => new Promise((res) => setTimeout(res, ms));
   return mainAnswer;
 };
-scraper("2520228", "09/10/1987", "14846579287");
 
 module.exports = { scraper };
