@@ -11,6 +11,7 @@ const { scraper } = require("./scraper");
 
 function scrapeAll() {
   scraper("2520228", "09/10/1987", "14846579287");
+
   setTimeout(() => {
     scraper("3729564", "10/02/1989", "14848282651");
   }, 3000);

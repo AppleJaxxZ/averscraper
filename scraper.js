@@ -1,12 +1,11 @@
 const puppeteer = require("puppeteer");
 
 const fs = require("fs");
-const cors = require("cors");
+
 const request = require("request-promise-native").defaults({ Jar: true });
 const poll = require("promise-poller").default;
 require("dotenv").config();
 const twilioNumber = process.env.TWILIO_PHONE_NUMBER;
-const receivingNumber = process.env.RECEIVING_NUMBER;
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const client = require("twilio")(accountSid, authToken);
