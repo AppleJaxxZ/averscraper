@@ -185,7 +185,7 @@ const scraper = async (pinNum, dateOfB, phone) => {
         to: phone,
       })
       .then((message) =>
-        console.log("Your message was sent buddy!" + message.sid)
+        console.log(`${pinNum} a message was sent to this ID`+ message.sid)
       );
   };
 
