@@ -9,7 +9,7 @@ const { scraper } = require("./scraper");
 
 // fetchTestingTimes.start();
 
-function scrapeAll() {
+
   scraper("2520228", "09/10/1987", "14846579287");
 
   setTimeout(() => {
@@ -31,6 +31,6 @@ function scrapeAll() {
   setTimeout(() => {
     scraper("5090314", "07/05/1985", "16103336159");
   }, 15000);
-}
 
-scrapeAll();
+
+
