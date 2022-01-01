@@ -31,4 +31,6 @@ function scrapeAll() {
   }, 360000);
 }
 
+
+//function calls each persons scrape
 scrapeAll();
