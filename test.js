@@ -180,12 +180,12 @@ const scraper = async (pinNum, dateOfB, phone) => {
   const sendSMS = (sms) => {
     client.messages
       .create({
-        body: `${pinNum}: ${sms}..ALWAYS CHECK YOUR PIN AND THE DATE!`,
+        body: `${pinNum}: ${sms}..If your pin at the beginning of this text isn't yours please message me.`,
         from: twilioNumber,
         to: phone,
       })
       .then((message) =>
-        console.log(`${pinNum} a message was sent to this ID` + message.sid)
+        console.log(`${pinNum} a message was sent to this ID`+ message.sid)
       );
   };
 
